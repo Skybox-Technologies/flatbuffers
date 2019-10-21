@@ -17,6 +17,7 @@
 extern crate smallvec;
 
 use std::cmp::max;
+use std::collections::BTreeMap;
 use std::iter::{DoubleEndedIterator, ExactSizeIterator};
 use std::marker::PhantomData;
 use std::ptr::write_bytes;
@@ -47,7 +48,7 @@ pub struct FlatBufferBuilder<'fbb> {
     head: usize,
 
     field_locs: Vec<FieldLoc>,
-    written_vtable_revpos: Vec<UOffsetT>,
+    written_vtable_revpos: BTreeMap<(VOffsetT, VOffsetT), Vec<UOffsetT>>,
 
     nested: bool,
     finished: bool,
@@ -90,7 +91,7 @@ impl<'fbb> FlatBufferBuilder<'fbb> {
             head,
 
             field_locs: Vec::new(),
-            written_vtable_revpos: Vec::new(),
+            written_vtable_revpos: BTreeMap::new(),
 
             nested: false,
             finished: false,
@@ -180,7 +181,7 @@ impl<'fbb> FlatBufferBuilder<'fbb> {
     /// FlatBuffer. This is primarily used to check vtable deduplication.
     #[inline]
     pub fn num_written_vtables(&self) -> usize {
-        self.written_vtable_revpos.len()
+        self.written_vtable_revpos.values().map(|v| v.len()).sum()
     }
 
     /// Start a Table write.
@@ -545,11 +546,15 @@ impl<'fbb> FlatBufferBuilder<'fbb> {
         // Write the VTable (we may delete it afterwards, if it is a duplicate):
         let vt_start_pos = self.head;
         let vt_end_pos = self.head + vtable_byte_len;
+
+        let vtable_byte_len = vtable_byte_len as VOffsetT;
+        let table_object_size = table_object_size as VOffsetT;
+
         {
             // write the vtable header:
             let vtfw = &mut VTableWriter::init(&mut self.owned_buf[vt_start_pos..vt_end_pos]);
-            vtfw.write_vtable_byte_length(vtable_byte_len as VOffsetT);
-            vtfw.write_object_inline_size(table_object_size as VOffsetT);
+            vtfw.write_vtable_byte_length(vtable_byte_len);
+            vtfw.write_object_inline_size(table_object_size);
 
             // serialize every FieldLoc to the vtable:
             for &fl in self.field_locs.iter() {
@@ -564,18 +569,25 @@ impl<'fbb> FlatBufferBuilder<'fbb> {
         }
         let dup_vt_use = {
             let this_vt = VTable::init(&self.owned_buf[..], self.head);
-            self.find_duplicate_stored_vtable_revloc(this_vt)
+            self.find_duplicate_stored_vtable_revloc(
+                vtable_byte_len as VOffsetT,
+                table_object_size as VOffsetT,
+                this_vt,
+            )
         };
 
         let vt_use = match dup_vt_use {
             Some(n) => {
                 VTableWriter::init(&mut self.owned_buf[vt_start_pos..vt_end_pos]).clear();
-                self.head += vtable_byte_len;
+                self.head += vtable_byte_len as usize;
                 n
             }
             None => {
                 let new_vt_use = self.used_space() as UOffsetT;
-                self.written_vtable_revpos.push(new_vt_use);
+                self.written_vtable_revpos
+                    .entry((vtable_byte_len, table_object_size))
+                    .or_default()
+                    .push(new_vt_use);
                 new_vt_use
             }
         };
@@ -598,14 +610,24 @@ impl<'fbb> FlatBufferBuilder<'fbb> {
     }
 
     #[inline]
-    fn find_duplicate_stored_vtable_revloc(&self, needle: VTable) -> Option<UOffsetT> {
-        for &revloc in self.written_vtable_revpos.iter().rev() {
-            let o = VTable::init(
-                &self.owned_buf[..],
-                self.head + self.used_space() - revloc as usize,
-            );
-            if needle == o {
-                return Some(revloc);
+    fn find_duplicate_stored_vtable_revloc(
+        &self,
+        vtable_byte_len: VOffsetT,
+        table_object_size: VOffsetT,
+        needle: VTable,
+    ) -> Option<UOffsetT> {
+        if let Some(tables) = self
+            .written_vtable_revpos
+            .get(&(vtable_byte_len, table_object_size))
+        {
+            for &revloc in tables.iter().rev() {
+                let o = VTable::init(
+                    &self.owned_buf[..],
+                    self.head + self.used_space() - revloc as usize,
+                );
+                if needle == o {
+                    return Some(revloc);
+                }
             }
         }
         None
