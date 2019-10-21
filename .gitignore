@@ -119,8 +119,8 @@ dart/.dart_tool/
 dart/build/
 dart/doc/api/
 Cargo.lock
-.corpus**
-.seed**
+.corpus*
+.seed*
 .crash**
 grpc/google/
 **/Package.resolved
