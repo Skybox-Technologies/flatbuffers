@@ -1,7 +1,9 @@
+use std::ops::Range;
+
+use thiserror::Error;
+
 use crate::follow::Follow;
 use crate::{ForwardsUOffset, SOffsetT, SkipSizePrefix, UOffsetT, VOffsetT, Vector, SIZE_UOFFSET};
-use std::ops::Range;
-use thiserror::Error;
 
 /// Traces the location of data errors. Not populated for Dos detecting errors.
 /// Useful for MissingRequiredField and Utf8Error in particular, though
@@ -194,9 +196,9 @@ pub struct VerifierOptions {
     /// Ignore errors where a string is missing its null terminator.
     /// This is mostly a problem if the message will be sent to a client using old c-strings.
     pub ignore_missing_null_terminator: bool,
-    // probably want an option to ignore utf8 errors since strings come from c++
-    // options to error un-recognized enums and unions? possible footgun.
-    // Ignore nested flatbuffers, etc?
+    /* probably want an option to ignore utf8 errors since strings come from c++
+     * options to error un-recognized enums and unions? possible footgun.
+     * Ignore nested flatbuffers, etc? */
 }
 impl Default for VerifierOptions {
     fn default() -> Self {

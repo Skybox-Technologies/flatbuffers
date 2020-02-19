@@ -14,12 +14,13 @@
  * limitations under the License.
  */
 
-use crate::follow::Follow;
-use crate::vector::VectorIter;
-use crate::EndianScalar;
 use std::fmt::{Debug, Formatter, Result};
 use std::marker::PhantomData;
 use std::mem::size_of;
+
+use crate::follow::Follow;
+use crate::vector::VectorIter;
+use crate::EndianScalar;
 
 #[derive(Copy, Clone)]
 pub struct Array<'a, T: 'a, const N: usize>(&'a [u8], PhantomData<T>);

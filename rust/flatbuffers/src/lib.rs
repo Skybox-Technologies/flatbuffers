@@ -41,6 +41,9 @@ mod verifier;
 mod vtable;
 mod vtable_writer;
 
+pub use bitflags;
+pub use get_root::*;
+
 pub use crate::array::{array_init, emplace_scalar_array, Array};
 pub use crate::builder::FlatBufferBuilder;
 pub use crate::endian_scalar::{
@@ -56,8 +59,6 @@ pub use crate::verifier::{
     VerifierOptions,
 };
 pub use crate::vtable::field_index_to_field_offset;
-pub use bitflags;
-pub use get_root::*;
 
 // TODO(rw): Unify `create_vector` and `create_vector_direct` by using
 //           `Into<Vector<...>>`.
