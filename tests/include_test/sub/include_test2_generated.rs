@@ -38,7 +38,7 @@ pub const ENUM_VALUES_FROM_INCLUDE: [FromInclude; 1] = [
   FromInclude::IncludeVal,
 ];
 
-#[derive(Clone, Copy, PartialEq, Eq, PartialOrd, Ord, Hash, Default, num_derive::FromPrimitive)]
+#[derive(Clone, Copy, PartialEq, Eq, PartialOrd, Ord, Hash, Default, num_derive::FromPrimitive, serde::Serialize, serde::Deserialize)]
 #[repr(transparent)]
 pub struct FromInclude(pub i64);
 #[allow(non_upper_case_globals)]

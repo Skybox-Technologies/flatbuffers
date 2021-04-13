@@ -697,7 +697,7 @@ class RustGenerator : public BaseGenerator {
       // needed to derive defaults in struct objects.
       code_ +=
           "#[derive(Clone, Copy, PartialEq, Eq, PartialOrd, Ord, Hash, "
-	      "Default, num_derive::FromPrimitive)]";
+	      "Default, num_derive::FromPrimitive, serde::Serialize, serde::Deserialize)]";
       code_ += "#[repr(transparent)]";
       code_ += "pub struct {{ENUM_NAME}}(pub {{BASE_TYPE}});";
       code_ += "#[allow(non_upper_case_globals)]";
