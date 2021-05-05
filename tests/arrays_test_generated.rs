@@ -37,7 +37,7 @@ pub const ENUM_VALUES_TEST_ENUM: [TestEnum; 3] = [
   TestEnum::C,
 ];
 
-#[derive(Clone, Copy, PartialEq, Eq, PartialOrd, Ord, Hash, Default)]
+#[derive(Clone, Copy, PartialEq, Eq, PartialOrd, Ord, Hash, Default, num_derive::FromPrimitive)]
 #[repr(transparent)]
 pub struct TestEnum(pub i8);
 #[allow(non_upper_case_globals)]

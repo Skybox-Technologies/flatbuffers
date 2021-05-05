@@ -29,7 +29,7 @@ pub const ENUM_VALUES_OPTIONAL_BYTE: [OptionalByte; 3] = [
   OptionalByte::Two,
 ];
 
-#[derive(Clone, Copy, PartialEq, Eq, PartialOrd, Ord, Hash, Default)]
+#[derive(Clone, Copy, PartialEq, Eq, PartialOrd, Ord, Hash, Default, num_derive::FromPrimitive)]
 #[repr(transparent)]
 pub struct OptionalByte(pub i8);
 #[allow(non_upper_case_globals)]

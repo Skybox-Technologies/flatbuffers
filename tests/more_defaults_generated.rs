@@ -20,7 +20,7 @@ pub const ENUM_VALUES_ABC: [ABC; 3] = [
   ABC::C,
 ];
 
-#[derive(Clone, Copy, PartialEq, Eq, PartialOrd, Ord, Hash, Default)]
+#[derive(Clone, Copy, PartialEq, Eq, PartialOrd, Ord, Hash, Default, num_derive::FromPrimitive)]
 #[repr(transparent)]
 pub struct ABC(pub i32);
 #[allow(non_upper_case_globals)]

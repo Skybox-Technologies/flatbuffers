@@ -37,7 +37,7 @@ pub const ENUM_VALUES_COLOR: [Color; 3] = [
   Color::Blue,
 ];
 
-#[derive(Clone, Copy, PartialEq, Eq, PartialOrd, Ord, Hash, Default)]
+#[derive(Clone, Copy, PartialEq, Eq, PartialOrd, Ord, Hash, Default, num_derive::FromPrimitive)]
 #[repr(transparent)]
 pub struct Color(pub i8);
 #[allow(non_upper_case_globals)]
@@ -127,7 +127,7 @@ pub const ENUM_VALUES_EQUIPMENT: [Equipment; 2] = [
   Equipment::Weapon,
 ];
 
-#[derive(Clone, Copy, PartialEq, Eq, PartialOrd, Ord, Hash, Default)]
+#[derive(Clone, Copy, PartialEq, Eq, PartialOrd, Ord, Hash, Default, num_derive::FromPrimitive)]
 #[repr(transparent)]
 pub struct Equipment(pub u8);
 #[allow(non_upper_case_globals)]

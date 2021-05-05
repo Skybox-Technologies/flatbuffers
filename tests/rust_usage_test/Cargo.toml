@@ -11,6 +11,8 @@ flexbuffers = { path = "../../rust/flexbuffers" }
 serde_derive = "1.0"
 serde = "1.0"
 serde_bytes = "0.11"
+num-derive = "0.3.3"
+num-traits = "0.2.14"
 
 [[bin]]
 name = "monster_example"

@@ -36,7 +36,7 @@ pub const ENUM_VALUES_UNION_IN_NESTED_NS: [UnionInNestedNS; 2] = [
   UnionInNestedNS::TableInNestedNS,
 ];
 
-#[derive(Clone, Copy, PartialEq, Eq, PartialOrd, Ord, Hash, Default)]
+#[derive(Clone, Copy, PartialEq, Eq, PartialOrd, Ord, Hash, Default, num_derive::FromPrimitive)]
 #[repr(transparent)]
 pub struct UnionInNestedNS(pub u8);
 #[allow(non_upper_case_globals)]
@@ -172,7 +172,7 @@ pub const ENUM_VALUES_ENUM_IN_NESTED_NS: [EnumInNestedNS; 3] = [
   EnumInNestedNS::C,
 ];
 
-#[derive(Clone, Copy, PartialEq, Eq, PartialOrd, Ord, Hash, Default)]
+#[derive(Clone, Copy, PartialEq, Eq, PartialOrd, Ord, Hash, Default, num_derive::FromPrimitive)]
 #[repr(transparent)]
 pub struct EnumInNestedNS(pub i8);
 #[allow(non_upper_case_globals)]
